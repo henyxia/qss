@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+print "Starting Quick Synchronization System\n";
+
+# Checking if the sync folder exists
+if(!-d 'qss')
+{
+	print "The Quick Synchronize folder is missing \n";
+	print "Would you like to create it ?\n";
+
+	my $createDir = <STDIN>;
+	chomp $createDir;
+	if(!($createDir eq 'y' || $createDir eq 'Y'))
+	{
+		die "F U Then \n";
+	}
+
+	# Creating the new dir
+	unless(mkdir 'qss')
+	{
+		die "Dir creation failed";
+	}
+
+	# Ok returning
+	print "Continuing\n";
+}
+
+# Going to the right dir
+unless(chdir 'qss')
+{
+	die "Dir cd failed";
+}
+
+if(!-d '.git')
+{
+	# Going back
+	unless(chdir '..')
+	{
+		die 'chdir fail';
+	}
+
+	# Need to pull the repo
+	unless(`git`)
+	{
+		print "Git not installed. Running apt-get install git\n";
+		`apt-get install git`;
+		die "Please run again qss\n";
+	}
+
+	print "Cloning\n";
+	`git clone https://github.com/henyxia/qss`;
+}
+else
+{
+	print "Syncing\n";
+	#`git pull`;
+	unless(chdir '..')
+	{
+		die 'chdir fail';
+	}
+}
+
+open CONFIG, "config.conf" or die "Unable to open file: $!";
+while(my $conf = <CONFIG>)
+{
+	print '>>> '.$conf;
+	system($conf);
+}
+close FILE;
