@@ -3,6 +3,11 @@
 print "Starting Quick Synchronization System\n";
 
 # Checking if the sync folder exists
+unless(chdir '/root/')
+{
+	die "Dir cd failed";
+}
+
 if(!-d 'qss')
 {
 	print "The Quick Synchronize folder is missing \n";
@@ -49,16 +54,23 @@ if(!-d '.git')
 
 	print "Cloning\n";
 	`git clone https://github.com/henyxia/qss`;
+
+	unless(chdir 'qss')
+	{
+		die "Dir cd failed";
+	}
 }
 else
 {
 	print "Syncing\n";
 	#`git pull`;
-	unless(chdir '..')
-	{
-		die 'chdir fail';
-	}
 }
+
+unless(chdir 'conf')
+{
+	die "Dir cd failed";
+}
+
 
 open CONFIG, "config.conf" or die "Unable to open file: $!";
 while(my $conf = <CONFIG>)
