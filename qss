@@ -63,7 +63,7 @@ if(!-d '.git')
 else
 {
 	print "Syncing\n";
-	#`git pull`;
+	`git pull`;
 }
 
 unless(chdir 'conf')
