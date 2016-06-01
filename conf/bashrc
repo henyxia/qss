@@ -1,0 +1,62 @@
+# Console
+export TERM=xterm-256color
+export TERMCAP=
+PS1='${debian_chroot:+($debian_chroot)}\[\e[1;37m\][\[\e[0;36m\]\D{%Y-%m-%d}\[\e[0;37m\]|\[\e[0;36m\]\D{%H:%M:%S}\[\e[0;37m\]|\[\e[2;31m\]\u\[\e[0;37m\]@\[\e[1;32m\]\w\[\e[0;37m\]]\[\e[1;32m\]\$ \[\e[0m\]'
+
+#Tools
+extract () {
+   if [ -f $1 ] ; then
+       case $1 in
+	*.tar.bz2)	tar xvjf $1 && cd $(basename "$1" .tar.bz2) ;;
+	*.tar.gz)	tar xvzf $1 && cd $(basename "$1" .tar.gz) ;;
+	*.tar.xz)	tar Jxvf $1 && cd $(basename "$1" .tar.xz) ;;
+	*.bz2)		bunzip2 $1 && cd $(basename "$1" /bz2) ;;
+	*.rar)		unrar x $1 && cd $(basename "$1" .rar) ;;
+	*.gz)		gunzip $1 && cd $(basename "$1" .gz) ;;
+	*.tar)		tar xvf $1 && cd $(basename "$1" .tar) ;;
+	*.tbz2)		tar xvjf $1 && cd $(basename "$1" .tbz2) ;;
+	*.tgz)		tar xvzf $1 && cd $(basename "$1" .tgz) ;;
+	*.zip)		unzip $1 && cd $(basename "$1" .zip) ;;
+	*.Z)		uncompress $1 && cd $(basename "$1" .Z) ;;
+	*.7z)		7z x $1 && cd $(basename "$1" .7z) ;;
+	*)		echo "don't know how to extract '$1'..." ;;
+       esac
+   else
+       echo "'$1' is not a valid file!"
+   fi
+ }
+
+# Alias
+alias ls='ls -lsh --color'
+alias grep='grep --color=auto'
+
+#Autocompletion
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+fi
+
+_complete_ssh_hosts ()
+{
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        comp_ssh_hosts=`cat ~/.ssh/known_hosts | \
+                        cut -f 1 -d ' ' | \
+                        sed -e s/,.*//g | \
+                        grep -v ^# | \
+                        uniq | \
+                        grep -v "\[" ;
+                cat ~/.ssh/config | \
+                        grep "^Host " | \
+                        awk '{print $2}'
+                `
+        COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
+        return 0
+}
+complete -F _complete_ssh_hosts ssh
+alias c='clear'
+alias e='exit'
+alias v='vim'
+alias l='ls'
+alias ll='ls -lsh'
+alias lla='ls -lsah'
+alias vbash='vim ~/.bashrc'
