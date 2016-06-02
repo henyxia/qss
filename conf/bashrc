@@ -1,62 +1,128 @@
-# Console
-export TERM=xterm-256color
-export TERMCAP=
-PS1='${debian_chroot:+($debian_chroot)}\[\e[1;37m\][\[\e[0;36m\]\D{%Y-%m-%d}\[\e[0;37m\]|\[\e[0;36m\]\D{%H:%M:%S}\[\e[0;37m\]|\[\e[2;31m\]\u\[\e[0;37m\]@\[\e[1;32m\]\w\[\e[0;37m\]]\[\e[1;32m\]\$ \[\e[0m\]'
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
 
-#Tools
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# Mucho color
+export TERM=screen-256color
+export TERMCAP=
+
+# enable color support of ls and also add handy aliases
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# Nice PS1 ?
+PS1='${debian_chroot:+($debian_chroot)}\[\e[1;37m\][\[\e[0;36m\]\[\e[0;36m\]\u\[\e[0;37m\]@\[\e[1;32m\]md0:\w\[\e[0;37m\]]\[\e[1;32m\]\$ \[\e[0m\]'
+
+# Extract
 extract () {
    if [ -f $1 ] ; then
-       case $1 in
-	*.tar.bz2)	tar xvjf $1 && cd $(basename "$1" .tar.bz2) ;;
-	*.tar.gz)	tar xvzf $1 && cd $(basename "$1" .tar.gz) ;;
-	*.tar.xz)	tar Jxvf $1 && cd $(basename "$1" .tar.xz) ;;
-	*.bz2)		bunzip2 $1 && cd $(basename "$1" /bz2) ;;
-	*.rar)		unrar x $1 && cd $(basename "$1" .rar) ;;
-	*.gz)		gunzip $1 && cd $(basename "$1" .gz) ;;
-	*.tar)		tar xvf $1 && cd $(basename "$1" .tar) ;;
-	*.tbz2)		tar xvjf $1 && cd $(basename "$1" .tbz2) ;;
-	*.tgz)		tar xvzf $1 && cd $(basename "$1" .tgz) ;;
-	*.zip)		unzip $1 && cd $(basename "$1" .zip) ;;
-	*.Z)		uncompress $1 && cd $(basename "$1" .Z) ;;
-	*.7z)		7z x $1 && cd $(basename "$1" .7z) ;;
-	*)		echo "don't know how to extract '$1'..." ;;
+   case $1 in
+    *.tar.bz2)  tar xvjf $1 && cd $(basename "$1" .tar.bz2) ;;
+    *.tar.gz)   tar xvzf $1 && cd $(basename "$1" .tar.gz) ;;
+    *.tar.xz)   tar Jxvf $1 && cd $(basename "$1" .tar.xz) ;;
+    *.bz2)      bunzip2 $1 && cd $(basename "$1" /bz2) ;;
+    *.rar)      unrar x $1 && cd $(basename "$1" .rar) ;;
+    *.gz)       gunzip $1 && cd $(basename "$1" .gz) ;;
+    *.tar)      tar xvf $1 && cd $(basename "$1" .tar) ;;
+    *.tbz2)     tar xvjf $1 && cd $(basename "$1" .tbz2) ;;
+    *.tgz)      tar xvzf $1 && cd $(basename "$1" .tgz) ;;
+    *.zip)      unzip $1 && cd $(basename "$1" .zip) ;;
+    *.Z)        uncompress $1 && cd $(basename "$1" .Z) ;;
+    *.7z)       7z x $1 && cd $(basename "$1" .7z) ;;
+    *)      echo "don't know how to extract '$1'..." ;;
        esac
    else
        echo "'$1' is not a valid file!"
    fi
- }
+}
 
-# Alias
-alias ls='ls -lsh --color'
-alias grep='grep --color=auto'
-
-#Autocompletion
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-fi
-
+# SSH Autocompletion
 _complete_ssh_hosts ()
 {
-        COMPREPLY=()
-        cur="${COMP_WORDS[COMP_CWORD]}"
-        comp_ssh_hosts=`cat ~/.ssh/known_hosts | \
-                        cut -f 1 -d ' ' | \
-                        sed -e s/,.*//g | \
-                        grep -v ^# | \
-                        uniq | \
-                        grep -v "\[" ;
-                cat ~/.ssh/config | \
-                        grep "^Host " | \
-                        awk '{print $2}'
-                `
-        COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
-        return 0
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    comp_ssh_hosts=`cat ~/.ssh/known_hosts | \
+        cut -f 1 -d ' ' | \
+        sed -e s/,.*//g | \
+        grep -v ^# | \
+        uniq | \
+        grep -v "\[" ;
+        cat ~/.ssh/config | \
+        grep "^Host " | \
+        awk '{print $2}'
+	COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- $cur))
+    return 0
 }
 complete -F _complete_ssh_hosts ssh
-alias c='clear'
+
+
+# Set title
+function set-title() {
+  if [[ -z "$ORIG" ]]; then
+    ORIG=$PS1
+  fi
+  TITLE="\[\e]2;$@\a\]"
+  PS1=${ORIG}${TITLE}
+}
+
+# simple alias systems
+alias l='ls -lh'
+alias ll='ls -lash'
+alias rf='readlink -f'
 alias e='exit'
+alias c='clear'
 alias v='vim'
-alias l='ls'
-alias ll='ls -lsh'
-alias lla='ls -lsah'
-alias vbash='vim ~/.bashrc'
+
+# git aliases
+alias g='git'
+alias gs='git status'
+alias gb='git branch'
+alias gp='git pushdev'
+alias gpf='git pushdev -f'
+alias gsh='git show'
+alias gl='git lolbs'
+alias gd='git diff'
+alias gps='git pull --stat'
+
