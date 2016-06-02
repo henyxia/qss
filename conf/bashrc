@@ -53,7 +53,7 @@ if ! shopt -oq posix; then
 fi
 
 # Nice PS1 ?
-PS1='${debian_chroot:+($debian_chroot)}\[\e[1;37m\][\[\e[0;36m\]\[\e[0;36m\]\u\[\e[0;37m\]@\[\e[1;32m\]md0:\w\[\e[0;37m\]]\[\e[1;32m\]\$ \[\e[0m\]'
+PS1='${debian_chroot:+($debian_chroot)}\[\e[1;37m\][\[\e[0;36m\]\[\e[0;36m\]\u\[\e[0;37m\]@\[\e[1;32m\]\h:\w\[\e[0;37m\]]\[\e[1;32m\]\$ \[\e[0m\]'
 
 # Extract
 extract () {
