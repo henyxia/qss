@@ -3,7 +3,7 @@
 print "Starting Quick Synchronization System\n";
 
 # Checking if the sync folder exists
-unless(chdir '/root/')
+unless(chdir ${HOME})
 {
 	die "Dir cd failed";
 }
