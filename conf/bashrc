@@ -128,3 +128,4 @@ alias gl='git lolbs'
 alias gd='git diff'
 alias gps='git pull --stat'
 
+alias hatop='hatop -s /run/haproxy/admin.sock'
