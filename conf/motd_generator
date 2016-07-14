@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+# Cleaning the preivous screen
+system 'clear';
+
+# Big motd
+system 'cat motd_revs0';
+print "\n";
+
+# Hostname
+my $hostname_len = 80;
+my $hostname = `hostname`;
+chomp $hostname;
+
+$hostname_len -= length($hostname);
+$hostname_len /= 2;
+$hostname_len -= 8;
+
+for my $spaaace ( 0 .. $hostname_len )
+{
+	print ' ';
+}
+print '...::: ';
+print $hostname;
+print " :::...\n\n";
+
+# IPs
+system 'ifconfig |grep "Link\|inet"';
+print "\n";
