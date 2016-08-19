@@ -1,0 +1,56 @@
+#!/usr/bin/perl
+
+# Cleaning the preivous screen
+system 'clear';
+
+print 'XXXX  XXXXX X   X  XXXX  XXX    Host	   : ';
+
+# Hostname
+my $hostname = `hostname`;
+chomp $hostname;
+print $hostname;
+print "\n";
+
+# Uptime & Load
+my $uptime_raw = `uptime`;
+my $uptime, $load;
+if ( ! ( ( $uptime, $load ) = $uptime_raw =~ m#.*up \ {0,1}(.*),.*user.* average: (.*)# ) )
+{
+	$uptime = 'N/A';
+	$load	= 'N/A';
+}
+print 'X   X X     X   X X     X   X   Uptime     : ';
+print $uptime;
+print "\n";
+
+print 'XXXX  XXX    X X   XXX  X   X   Load       : ';
+print $load;
+print "\n";
+
+# Public IP
+my $ip_pub_raw = `ip addr show eth0 2>&1 |grep -v inet6 |grep inet`;
+my $ip_pub;
+
+if( ! ( ( $ip_pub ) = $ip_pub_raw =~ m#.*inet (.*) brd.*# ) )
+{
+	$ip_pub = 'N/A';
+}
+
+print 'X  X  X      X X      X X   X   Public IP  : ';
+print $ip_pub;
+print "\n";
+
+# Tunnel IP
+my $ip_tun_raw = `ip addr show tun0 2>&1 |grep -v inet6 |grep inet`;
+my $ip_tun;
+
+if( ! ( ( $ip_tun ) = $ip_tun_raw =~ m#.*inet (.*) brd.*# ) )
+{
+	$ip_tun = 'N/A';
+}
+
+print 'X   X XXXXX   X   XXXX   XXX    Tunnel IP  : ';
+print $ip_tun;
+print "\n";
+
+0;
