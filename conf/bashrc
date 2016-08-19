@@ -129,5 +129,6 @@ alias gd='git diff'
 alias gps='git pull --stat'
 
 alias hatop='hatop -s /run/haproxy/admin.sock'
+alias clip="xclip -selection c"
 
 perl ~/qss/conf/motd_generator
