@@ -4,7 +4,7 @@
 system 'clear';
 
 # Big motd
-system 'cat ~/qss/conf/motd_revs0';
+system 'cat ~/qss/conf/motd_revs0_huge';
 print "\n";
 
 # Hostname
