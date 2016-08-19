@@ -1,0 +1,53 @@
+Parent	srv11
+	Hostname	91.121.77.159
+	Port 		23578
+	User 		root
+	Tun 		169
+
+Host 	srv12
+	Hostname 	37.187.125.205
+	Port 		22
+	User 		root
+	Tun			249
+
+Host 	srv21
+	Hostname	109.190.124.45
+	Port 		23689
+	User 		root
+	Tun			182
+
+Child 	mumble
+	Hostname 	118.218.100.100
+    User 		root
+    Port 		22
+	Tun			216
+	Parent 		srv11
+
+Child 	minecraft
+	Hostname 	118.218.100.101
+    User 		root
+    Port 		22
+	Tun			46
+	Parent 		srv11
+
+Child 	plik
+    Hostname 	118.218.100.102
+    User 		root
+    Port 		22
+	Tun			112
+	Parent 		srv11
+
+Child 	irc
+    Hostname 	118.218.100.103
+    User 		root
+    Port 		22
+	Tun			248
+	Parent 		srv11
+
+Child tr
+    Hostname	118.218.100.104
+    User 		root
+    Port 		22
+	Tun			143
+	Parent 		srv11
+

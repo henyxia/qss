@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my $DEBUG = 1;
+
+sub debug
+{
+	my $data = shift;
+	
+	if ( $DEBUG )
+	{
+		printf STDERR $data;
+	}
+}
+
+debug("Reading config file\n");
+
+my $fh;
+
+if(!open($fh, '<', 'config'))
+{
+	print STDERR "Uanble to read your configuration file\n";
+	die();
+}
+
+my $data;
+my $line_number;
+my $parent;
+my $parentId;
+
+while ( my $line = <$fh> )
+{
+	$line_number++;
+	chomp $line;
+
+	my $type;
+	my $name;
+
+	if ( ( $type, $name ) = $line =~ m#^(Child|Parent|Host)[\ \t]+(.*)# )
+	{
+		debug("Type $type recognized  name $name line $line_number\n");
+	}
+}
