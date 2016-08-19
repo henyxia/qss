@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+# Cleaning the preivous screen
+system 'clear';
+
+# Big motd
+system 'cat ~/qss/conf/motd_revs0_huge';
+print "\n";
+
+# Hostname
+my $hostname_len = 80;
+my $hostname = `hostname`;
+chomp $hostname;
+
+$hostname_len -= length($hostname);
+$hostname_len /= 2;
+$hostname_len -= 8;
+
+for my $spaaace ( 0 .. $hostname_len )
+{
+	print ' ';
+}
+print '...::: ';
+print $hostname;
+print " :::...\n\n";
+
+# Last login
+#system("last -n 1 -w root |head -n 1 |sed -r 's/([a-zA-Z0-9]+)[\t\ ]{2,}[a-zA-A0-9\/]+[\t\ ]{2,}([a-zA-Z0-9\.\-]*).*/Last login with \1 with ip \2/g'");
+system("last -n 1 -w root |head -n 1");
+print("\n");
+
+# IPs
+system 'ifconfig |grep "Link\|inet"';
+print "\n";
