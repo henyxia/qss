@@ -27,19 +27,73 @@ if(!open($fh, '<', 'config'))
 
 my $data;
 my $line_number;
+my $entity;
+my $type;
 my $parent;
-my $parentId;
 
 while ( my $line = <$fh> )
 {
 	$line_number++;
 	chomp $line;
 
-	my $type;
 	my $name;
 
 	if ( ( $type, $name ) = $line =~ m#^(Child|Parent|Host)[\ \t]+(.*)# )
 	{
-		debug("Type $type recognized  name $name line $line_number\n");
+		#debug("Type $type recognized name $name line $line_number\n");
+		$entity = $name;
+		$data->{ $name }->{type} = $type;
+	}
+	elsif ( !$entity )
+	{
+		debug("Line $line_number not read properly\n");
+		next;
+	}
+	elsif ( my ( $property, $value ) = $line =~ m#^[\ \t]+([a-zA-Z]*)[\ \t](.*)# )
+	{
+		$data->{ $entity }->{ lc( $property ) } = $value;
+	}
+	else
+	{
+		#debug("Malformed line $line_number\n");
+		next;
 	}
 }
+
+# Checking
+debug("Checking data\n");
+my @keysToValidate = qw{ hostname port user tun };
+foreach my $Item ( keys %{ $data } )
+{
+	foreach my $key ( @keysToValidate )
+	{
+		if ( !length( $data->{ $Item }->{ $key } ) )
+		{
+			print("Got " . $data->{ $Item }->{ $key } . "\n");
+			print("Key $key is missing in $Item\n");
+			die;
+		}
+	}
+}
+
+# Now ordering
+foreach my $Item ( keys %{ $data } )
+{
+	if ( $data->{ $item }->{type} ne 'Host' )
+	{
+		next;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
